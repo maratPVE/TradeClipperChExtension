@@ -1,0 +1,19 @@
+{
+    "name": "tradingview-journal-extension",
+    "version": "0.1.0",
+    "description": "TradingView Journal Chrome extension",
+    "scripts": {
+        "dev": "vite",
+        "build": "vite build"
+    },
+    "dependencies": {
+        "pinia": "^3.0.3",
+        "vue": "^3.5.18"
+    },
+    "devDependencies": {
+        "@crxjs/vite-plugin": "^2.0.3",
+        "@vitejs/plugin-vue": "^5.0.4",
+        "typescript": "^5.8.3",
+        "vite": "^6.0.0"
+    }
+}

@@ -2,25 +2,24 @@ import { defineStore } from 'pinia';
 
 export const useUiStore = defineStore('ui', {
   state: () => ({
-    isWindowOpen: false,           // montée/démontée
-    isWindowHidden: false,         // montée mais invisible
+    isWindowOpen: false,           // monté ou non (on ne le remettra plus à false)
+    isWindowHidden: false,         // visible / caché (v-show)
     pos:  { top: 16, right: 16 },
     size: { width: 380, height: 480 },
   }),
   actions: {
-    // Ouvrir / fermer (monter/démonter)
-    openWindow()  { this.isWindowOpen = true;  this.isWindowHidden = false; this._persist(); },
-    closeWindow() { this.isWindowOpen = false; /* hidden peu importe */      this._persist(); },
+    // Ouvre (monte) & affiche
+    openWindow()  { this.isWindowOpen = true; this.isWindowHidden = false; this._persist(); },
 
-    // Cacher / afficher (sans démonter)
+    // Cache / affiche sans démonter
     hideWindow()  { if (this.isWindowOpen) { this.isWindowHidden = true;  this._persist(); } },
     showWindow()  { if (this.isWindowOpen) { this.isWindowHidden = false; this._persist(); } },
+    toggleHidden(){ if (this.isWindowOpen) { this.isWindowHidden = !this.isWindowHidden; this._persist(); } },
 
-    // Utilitaire pour le bouton de toolbar
+    // Appelé par le bouton de toolbar
     toggleFromToolbar() {
-      if (!this.isWindowOpen)        return this.openWindow();  // pas ouverte → ouvrir
-      if (this.isWindowHidden)       return this.showWindow();  // cachée   → afficher
-      return this.closeWindow();                                // visible  → fermer
+      if (!this.isWindowOpen) return this.openWindow();   // 1er clic → ouvre & affiche
+      return this.toggleHidden();                         // ensuite → cache/affiche
     },
 
     setPos(top, right){ this.pos.top = top; this.pos.right = right; this._persist(); },

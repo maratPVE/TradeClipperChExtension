@@ -18,7 +18,7 @@ import icon from '@/assets/button/journal.svg';
 const ui = useUiStore();
 
 function handleClick() {
-  ui.toggleFromToolbar();   // ✅ bouton = ouvrir/montrer ↔ fermer
+  ui.toggleFromToolbar();   // 1er clic → ouvre; suivants → cache/affiche
 }
 
 onMounted(() => {

@@ -5,7 +5,7 @@
       <span>Journal</span>
       <div :style="headerActions">
         <button :style="iconBtn" title="Cacher" @click="ui.hideWindow()">—</button>
-        <button :style="iconBtn" title="Fermer" @click="ui.closeWindow()">×</button>
+        <!-- plus de bouton Fermer -->
       </div>
     </div>
     <div :style="bodyStyle"><!-- contenu plus tard --></div>
@@ -46,10 +46,7 @@ const headerStyle = {
   userSelect: 'none',
 };
 
-const headerActions = {
-  display: 'flex',
-  gap: '6px',
-};
+const headerActions = { display: 'flex', gap: '6px' };
 
 const iconBtn = {
   width: '24px',
@@ -64,7 +61,5 @@ const iconBtn = {
   padding: 0,
 };
 
-const bodyStyle = {
-  flex: 1,
-};
+const bodyStyle = { flex: 1 };
 </script>

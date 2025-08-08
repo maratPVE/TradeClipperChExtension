@@ -1,11 +1,10 @@
 <template>
   <!-- v-show pour cacher sans démonter -->
   <div v-show="!ui.isWindowHidden" :style="panelStyle">
-    <div :style="headerStyle">
+    <div :style="headerStyle" @pointerdown="onHeaderPointerDown">
       <span>Journal</span>
       <div :style="headerActions">
         <button :style="iconBtn" title="Cacher" @click="ui.hideWindow()">—</button>
-        <!-- plus de bouton Fermer -->
       </div>
     </div>
     <div :style="bodyStyle"><!-- contenu plus tard --></div>
@@ -15,8 +14,10 @@
 <script setup>
 import { computed } from 'vue';
 import { useUiStore } from '@/stores/ui';
+import { useDragMove } from './useDragMove';
 
 const ui = useUiStore();
+const { onHeaderPointerDown } = useDragMove(ui);
 
 const panelStyle = computed(() => ({
   position: 'fixed',
@@ -44,6 +45,7 @@ const headerStyle = {
   fontSize: '12px',
   color: '#c9d1d9',
   userSelect: 'none',
+  cursor: 'grab', // feedback visuel
 };
 
 const headerActions = { display: 'flex', gap: '6px' };

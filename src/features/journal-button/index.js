@@ -23,7 +23,6 @@ function injectButton(toolbar) {
   // monte le composant Vue dans ce conteneur
   createApp(JournalButton).mount(container);
   mounted = true;
-  console.log('[Journal] bouton injecté');
 }
 
 // observe le DOM jusqu'à ce que la toolbar soit disponible

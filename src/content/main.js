@@ -1,15 +1,32 @@
 import { createApp } from 'vue';
+import { createPinia, setActivePinia } from 'pinia';
 import AppRoot from './AppRoot.vue';
 
-// 1) on fixe un Shadow DOM pour isoler notre CSS
-const shadowHost = document.createElement('div');
-shadowHost.id = 'tv-journal-shadow-host';
-document.documentElement.appendChild(shadowHost);
-const shadowRoot = shadowHost.attachShadow({ mode: 'open' });
+// Shadow DOM pour isoler notre UI
+const host = document.createElement('div');
+host.id = 'tv-journal-shadow-host';
+document.documentElement.appendChild(host);
+const shadowRoot = host.attachShadow({ mode: 'open' });
 
-// 2) on crée la racine où Vue va se monter
-const appRoot = document.createElement('div');
-shadowRoot.appendChild(appRoot);
+// Point de montage
+const root = document.createElement('div');
+shadowRoot.appendChild(root);
 
-// 3) on démarre l'app (ne fait qu'enregistrer les features)
-createApp(AppRoot).mount(appRoot);
+// Vue + Pinia
+const app = createApp(AppRoot);
+const pinia = createPinia();
+app.use(pinia);
+setActivePinia(pinia);
+app.mount(root);
+
+// ✅ IMPORTANT : charger les features après que Pinia soit active
+Promise.all([
+  import('@/features/journal-button'),
+  import('@/features/journal-window-shell'),
+]).catch(err => console.error('[Journal] feature load failed:', err));
+
+// (optionnel) recharger l'état persistant plus tard
+import('@/stores/ui').then(({ useUiStore }) => {
+  const ui = useUiStore();
+  ui.load?.();
+});

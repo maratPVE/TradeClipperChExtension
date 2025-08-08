@@ -1,6 +1,4 @@
 <template></template>
-
 <script setup>
-// Composant racine : il fait uniquement “import” de la feature
-import '@/features/journal-button';   /* ou chemin relatif si pas d’alias */
+// (rien ici – on n’importe plus les features dans ce fichier)
 </script>

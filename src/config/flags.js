@@ -1,0 +1,1 @@
+export const ENABLE_MODE_MENU = false; // passe à true pour réactiver le menu

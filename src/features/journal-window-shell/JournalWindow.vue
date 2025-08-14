@@ -7,8 +7,9 @@
       </div>
     </div>
 
-    <!-- MENU -->
-    <ModeSwitcher />
+    <!-- MENU (désactivé via flag) -->
+    <ModeSwitcher v-if="ENABLE_MODE_MENU" />
+
 
     <!-- CONTENU (vide pour l’instant) -->
     <div :style="bodyStyle"></div>
@@ -27,6 +28,7 @@
 
 <script setup>
 import { computed } from 'vue';
+import { ENABLE_MODE_MENU } from '@/config/flags';
 import { useUiStore } from '@/stores/ui';
 import { useDragMove } from './useDragMove';
 import { useResize } from './useResize';

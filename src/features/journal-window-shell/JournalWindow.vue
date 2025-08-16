@@ -3,18 +3,25 @@
     <div :style="headerStyle" @pointerdown="onHeaderPointerDown">
       <span>Journal</span>
       <div :style="headerActions">
+        <button
+          v-if="view.screen === 'journal'"
+          :style="textBtn"
+          title="Retour au menu"
+          @click="view.goMenu()"
+        >Menu</button>
         <button :style="iconBtn" title="Cacher" @click="ui.hideWindow()">—</button>
       </div>
     </div>
 
-    <!-- MENU (désactivé via flag) -->
-    <ModeSwitcher v-if="ENABLE_MODE_MENU" />
+    <!-- Barre de démarrage (hors body pour éviter le padding latéral) -->
+    <StartMenu v-if="view.screen === 'menu'" />
 
+    <!-- Corps : contenu journal -->
+    <div :style="bodyStyle">
+      <JournalRoot v-if="view.screen === 'journal'" />
+    </div>
 
-    <!-- CONTENU (vide pour l’instant) -->
-    <div :style="bodyStyle"></div>
-
-    <!-- Poignées de redimensionnement (inchangé) -->
+    <!-- Poignées de redimensionnement -->
     <div :style="resizeLeftStyle"    @pointerdown="onLeftPointerDown"></div>
     <div :style="resizeRightStyle"   @pointerdown="onRightPointerDown"></div>
     <div :style="resizeTopStyle"     @pointerdown="onTopPointerDown"></div>
@@ -28,13 +35,16 @@
 
 <script setup>
 import { computed } from 'vue';
-import { ENABLE_MODE_MENU } from '@/config/flags';
+import { useViewStore } from '@/stores/view';
+import StartMenu from '@/features/start-menu/StartMenu.vue';
+import JournalRoot from '@/features/journal-content/JournalRoot.vue';
 import { useUiStore } from '@/stores/ui';
 import { useDragMove } from './useDragMove';
 import { useResize } from './useResize';
-import ModeSwitcher from '@/features/journal-content/menu/ModeSwitcher.vue';
 
 const ui = useUiStore();
+const view = useViewStore();
+
 const { onHeaderPointerDown } = useDragMove(ui);
 const {
   onLeftPointerDown,
@@ -75,30 +85,121 @@ const headerStyle = {
   color: '#c9d1d9',
   userSelect: 'none',
   cursor: 'grab',
+  position: 'relative', // header au-dessus des handles
+  zIndex: 3,
 };
 
 const headerActions = { display: 'flex', gap: '6px' };
+
 const iconBtn = {
-  width: '24px', height: '24px', lineHeight: '24px', textAlign: 'center',
-  background: 'transparent', border: '1px solid #3a3f51', borderRadius: '4px',
-  color: '#c9d1d9', cursor: 'pointer', padding: 0,
+  minWidth: '28px',
+  height: '24px',
+  lineHeight: '24px',
+  textAlign: 'center',
+  background: 'transparent',
+  border: '1px solid #3a3f51',
+  borderRadius: '4px',
+  color: '#c9d1d9',
+  cursor: 'pointer',
+  padding: 0,
+};
+
+const textBtn = {
+  height: '24px',
+  padding: '0 8px',
+  background: 'transparent',
+  border: '1px solid #3a3f51',
+  borderRadius: '4px',
+  color: '#c9d1d9',
+  fontSize: '12px',
+  lineHeight: '22px',
+  cursor: 'pointer',
 };
 
 const bodyStyle = {
   flex: 1,
   overflow: 'auto',
-  padding: '8px' // laisse de la marge pour plus tard
+  padding: '8px'
 };
 
-/* handles inchangés… */
+const HEADER_H = 36; // px
+
+/* --- Styles des poignées (ne recouvrent plus le header) --- */
 const HANDLE = '6px';
 const CORNER = '12px';
-const resizeLeftStyle   = { position: 'absolute', top: '0',  left: '0',  width: HANDLE, height: '100%', cursor: 'ew-resize' };
-const resizeRightStyle  = { position: 'absolute', top: '0',  right: '0', width: HANDLE, height: '100%', cursor: 'ew-resize' };
-const resizeTopStyle    = { position: 'absolute', top: '0',  left: '0',  width: '100%', height: HANDLE, cursor: 'ns-resize' };
-const resizeBottomStyle = { position: 'absolute', bottom: '0', left: '0', width: '100%', height: HANDLE, cursor: 'ns-resize' };
-const resizeBLStyle     = { position: 'absolute', bottom: '0', left: '0',  width: CORNER, height: CORNER, cursor: 'nesw-resize' };
-const resizeBRStyle     = { position: 'absolute', bottom: '0', right: '0', width: CORNER, height: CORNER, cursor: 'nwse-resize' };
-const resizeTRStyle     = { position: 'absolute', top: '0',  right: '0', width: CORNER, height: CORNER, cursor: 'nesw-resize' };
-const resizeTLStyle     = { position: 'absolute', top: '0',  left: '0',  width: CORNER, height: CORNER, cursor: 'nwse-resize' };
+
+const resizeTopStyle = {
+  position: 'absolute',
+  top: HEADER_H + 'px',
+  left: '0',
+  width: '100%',
+  height: HANDLE,
+  cursor: 'ns-resize',
+  zIndex: 1,
+};
+const resizeTRStyle = {
+  position: 'absolute',
+  top: HEADER_H + 'px',
+  right: '0',
+  width: CORNER,
+  height: CORNER,
+  cursor: 'nesw-resize',
+  zIndex: 1,
+};
+const resizeTLStyle = {
+  position: 'absolute',
+  top: HEADER_H + 'px',
+  left: '0',
+  width: CORNER,
+  height: CORNER,
+  cursor: 'nwse-resize',
+  zIndex: 1,
+};
+
+const resizeLeftStyle = {
+  position: 'absolute',
+  top: HEADER_H + 'px',
+  left: '0',
+  width: HANDLE,
+  height: `calc(100% - ${HEADER_H}px)`,
+  cursor: 'ew-resize',
+  zIndex: 1,
+};
+const resizeRightStyle = {
+  position: 'absolute',
+  top: HEADER_H + 'px',
+  right: '0',
+  width: HANDLE,
+  height: `calc(100% - ${HEADER_H}px)`,
+  cursor: 'ew-resize',
+  zIndex: 1,
+};
+
+const resizeBottomStyle = {
+  position: 'absolute',
+  bottom: '0',
+  left: '0',
+  width: '100%',
+  height: HANDLE,
+  cursor: 'ns-resize',
+  zIndex: 1,
+};
+const resizeBLStyle = {
+  position: 'absolute',
+  bottom: '0',
+  left: '0',
+  width: CORNER,
+  height: CORNER,
+  cursor: 'nesw-resize',
+  zIndex: 1,
+};
+const resizeBRStyle = {
+  position: 'absolute',
+  bottom: '0',
+  right: '0',
+  width: CORNER,
+  height: CORNER,
+  cursor: 'nwse-resize',
+  zIndex: 1,
+};
 </script>

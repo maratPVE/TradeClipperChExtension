@@ -107,10 +107,11 @@ export function useResize(ui) {
   // ===== BORD DROIT (right + width) — déjà corrigé
   function onRightPointerDown(e) {
     startPointerDrag(e, {
-      onMove: ({ dx, startSize, startPos, startLeft }) => {
+      onMove: ({ dx, startSize, startPos }) => {
         let newRight = startPos.right - dx;
         let newW = startPos.right + startSize.width - newRight;
-        newW = clampWidthFromRight(newW, newRight, startLeft);
+        const currentLeft = leftFrom(newRight, newW);
+        newW = clampWidthFromRight(newW, newRight, currentLeft);
         newRight = startPos.right + (startSize.width - newW);
         newRight = Math.max(0, newRight);
         ui.pos.right = Math.round(newRight);
@@ -122,7 +123,7 @@ export function useResize(ui) {
   // ===== COIN HAUT-DROITE
   function onTopRightPointerDown(e) {
     startPointerDrag(e, {
-      onMove: ({ dx, dy, startSize, startPos, startLeft, startBottom }) => {
+      onMove: ({ dx, dy, startSize, startPos, startBottom }) => {
         let newTop = startPos.top + dy;
         const minTop = Math.max(0, startBottom - MAX_H_CAP);
         const maxTop = Math.min(startBottom - MIN_H, Math.max(0, startBottom - MIN_H));
@@ -132,7 +133,8 @@ export function useResize(ui) {
 
         let newRight = startPos.right - dx;
         let newW = startPos.right + startSize.width - newRight;
-        newW = clampWidthFromRight(newW, newRight, startLeft);
+        const currentLeft = leftFrom(newRight, newW);
+        newW = clampWidthFromRight(newW, newRight, currentLeft);
         newRight = startPos.right + (startSize.width - newW);
         newRight = Math.max(0, newRight);
 
@@ -147,13 +149,14 @@ export function useResize(ui) {
   // ===== COIN BAS-DROITE
   function onBottomRightPointerDown(e) {
     startPointerDrag(e, {
-      onMove: ({ dx, dy, startSize, startPos, startLeft }) => {
+      onMove: ({ dx, dy, startSize, startPos }) => {
         let newH = startSize.height + dy;
         newH = clampHeightFromTop(newH, startPos.top);
 
         let newRight = startPos.right - dx;
         let newW = startPos.right + startSize.width - newRight;
-        newW = clampWidthFromRight(newW, newRight, startLeft);
+        const currentLeft = leftFrom(newRight, newW);
+        newW = clampWidthFromRight(newW, newRight, currentLeft);
         newRight = startPos.right + (startSize.width - newW);
         newRight = Math.max(0, newRight);
 

@@ -1,13 +1,5 @@
 <template>
-  <div
-    ref="railRef"
-    :style="[rail, isDragging ? railDragging : null]"
-    @pointerdown="onRailDown"
-    @pointermove="onRailMove"
-    @pointerup="onRailUp"
-    @pointerleave="onRailUp"
-    @click="closeMenu"
-  >
+  <div ref="railRef" :style="rail" @click="closeMenu">
     <div :style="gridWrap">
       <Pill
         v-for="(it, idx) in props.items"
@@ -26,15 +18,12 @@
 <script setup>
 import { ref, provide } from 'vue';
 import Pill from './Pill.vue';
-import { useRailDrag } from './useRailDrag';
 
 const props = defineProps({ items: { type: Array, required: true } });
-const emit  = defineEmits(['edit','remove']);
+const emit  = defineEmits(['edit', 'remove']);
 
 const railRef = ref(null);
 provide('getRailRect', () => railRef.value?.getBoundingClientRect?.());
-
-const { isDragging, onRailDown, onRailMove, onRailUp } = useRailDrag(railRef);
 
 const openIndex = ref(-1);
 function toggleMenu(i){ openIndex.value = openIndex.value === i ? -1 : i; }
@@ -47,11 +36,8 @@ const rail = {
   overflowX: 'auto',
   overflowY: 'visible',
   WebkitOverflowScrolling: 'touch',
-  cursor: 'grab',
   paddingBottom: '4px',
 };
-
-const railDragging = { cursor: 'grabbing' };
 
 /* Grille 2 colonnes pour aligner gauche/droite */
 const gridWrap = {
@@ -61,5 +47,4 @@ const gridWrap = {
   rowGap: '6px',
   width: 'max-content'
 };
-
 </script>

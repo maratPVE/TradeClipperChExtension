@@ -20,7 +20,7 @@ import { ref, provide } from 'vue';
 import Pill from './Pill.vue';
 
 const props = defineProps({ items: { type: Array, required: true } });
-const emit  = defineEmits(['edit','remove']);
+const emit  = defineEmits(['edit', 'remove']);
 
 const railRef = ref(null);
 provide('getRailRect', () => railRef.value?.getBoundingClientRect?.());
@@ -47,5 +47,4 @@ const gridWrap = {
   rowGap: '6px',
   width: 'max-content'
 };
-
 </script>

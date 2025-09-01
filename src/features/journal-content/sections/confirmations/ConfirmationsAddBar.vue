@@ -35,28 +35,7 @@ function onQuickAdd() {
   }
   emit('quick', name);
 }
-</script>
 
-<template>
-  <div :style="toolbarRow">
-    <div :style="[inputCase, invalid ? inputCaseInvalid : null]">
-      <input
-        ref="addRef"
-        :style="inputField"
-        v-model="newName"
-        placeholder="Add confirmation..."
-        aria-label="Add confirmation"
-        spellcheck="false"
-        @keydown.enter.stop.prevent="onPlusClick"
-      />
-      <button :style="insetBtn" title="Add" @click="onPlusClick">+</button>
-      <button :style="insetBtn" title="Quick add" @click="onQuickAdd">⚡</button>
-    </div>
-    <button :style="searchBtn" title="Search">🔍</button>
-  </div>
-</template>
-
-<script setup>
 const toolbarRow = {
   display: 'grid',
   gridTemplateColumns: '1fr auto',
@@ -89,3 +68,22 @@ const searchBtn = {
   color: '#c9d1d9', cursor: 'pointer', lineHeight: '30px', textAlign: 'center',
 };
 </script>
+
+<template>
+  <div :style="toolbarRow">
+    <div :style="[inputCase, invalid ? inputCaseInvalid : null]">
+      <input
+        ref="addRef"
+        :style="inputField"
+        v-model="newName"
+        placeholder="Add confirmation..."
+        aria-label="Add confirmation"
+        spellcheck="false"
+        @keydown.enter.stop.prevent="onPlusClick"
+      />
+      <button :style="insetBtn" title="Add" @click="onPlusClick">+</button>
+      <button :style="insetBtn" title="Quick add" @click="onQuickAdd">⚡</button>
+    </div>
+    <button :style="searchBtn" title="Search">🔍</button>
+  </div>
+</template>

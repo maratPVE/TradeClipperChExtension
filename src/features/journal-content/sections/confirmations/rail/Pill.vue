@@ -62,10 +62,9 @@
   });
   
   /* Styles locaux */
-  const cell = {
+const cell = {
   position: 'relative',
   display: 'inline-block',
-  minWidth: '78px',   // ⬅️ plus étroit
   minHeight: '32px',
 };
 

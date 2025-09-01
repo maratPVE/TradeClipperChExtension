@@ -8,26 +8,23 @@
     @pointerleave="onRailUp"
     @click="closeMenu"
   >
-    <div :style="rowsWrap">
-      <!-- 3 rails indépendants, compacts à gauche -->
-      <div v-for="(row, r) in rows" :key="r" :style="rowStyle">
-        <Pill
-          v-for="pair in row"
-          :key="pair.idx"
-          :item="pair.item"
-          :index="pair.idx"
-          :open="openIndex === pair.idx"
-          @toggle="toggleMenu"
-          @edit="onEdit"
-          @remove="onRemove"
-        />
-      </div>
+    <div :style="gridWrap">
+      <Pill
+        v-for="(it, idx) in props.items"
+        :key="idx"
+        :item="it"
+        :index="idx"
+        :open="openIndex === idx"
+        @toggle="toggleMenu"
+        @edit="onEdit"
+        @remove="onRemove"
+      />
     </div>
   </div>
 </template>
 
 <script setup>
-import { computed, ref, provide } from 'vue';
+import { ref, provide } from 'vue';
 import Pill from './Pill.vue';
 import { useRailDrag } from './useRailDrag';
 
@@ -45,13 +42,6 @@ function closeMenu(){ openIndex.value = -1; }
 function onEdit(p){ emit('edit', p); closeMenu(); }
 function onRemove(i){ emit('remove', i); closeMenu(); }
 
-/* Répartition 3 lignes (0,3,6 | 1,4,7 | 2,5,8) */
-const rows = computed(() => {
-  const r = [[],[],[]];
-  (props.items || []).forEach((it, idx) => r[idx % 3].push({ item: it, idx }));
-  return r;
-});
-
 /* === Styles === */
 const rail = {
   overflowX: 'auto',
@@ -63,21 +53,12 @@ const rail = {
 
 const railDragging = { cursor: 'grabbing' };
 
-/* ⬇️ FLEX colonne pour éviter l’étirement */
-const rowsWrap = {
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'flex-start',
-  gap: '6px',          // espace vertical entre lignes
-  width: 'max-content' // largeur = contenu
-};
-
-/* Chaque ligne compacte ses éléments à gauche */
-const rowStyle = {
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'flex-start',
-  gap: '4px',         // ⬅️ était 6px
+/* Grille 2 colonnes pour aligner gauche/droite */
+const gridWrap = {
+  display: 'grid',
+  gridTemplateColumns: 'max-content max-content',
+  columnGap: '8px',
+  rowGap: '6px',
   width: 'max-content'
 };
 

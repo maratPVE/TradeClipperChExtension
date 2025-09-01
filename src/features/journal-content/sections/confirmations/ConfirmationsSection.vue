@@ -29,7 +29,7 @@
   import { inject, ref } from 'vue';
   import ConfirmationsAddBar from './ConfirmationsAddBar.vue';
   import ConfirmationsModal  from './ConfirmationsModal.vue';
-  import ConfirmationsRail   from './ConfirmationsRail.vue';
+  import ConfirmationsRail   from './rail/Rail.vue';
   
   /** Journal est fourni par JournalRoot via provide('journal', state) */
   const journal = inject('journal');
